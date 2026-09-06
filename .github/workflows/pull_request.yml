@@ -30,7 +30,7 @@ concurrency:
 env:
   # The one variable that separates the arms: on baseline, action-checkout
   # skips its Set up Chalk step entirely.
-  CHALK_ON: ${{ github.event_name == 'workflow_dispatch' && inputs.leg != 'baseline' }}
+  CHALK_ON: ${{ inputs.leg == 'instrumented' }}
 
 run-name: "Pull request ${{ inputs.leg || 'push' }} ${{ inputs.racecar_run }}"
 
@@ -42,7 +42,7 @@ jobs:
     name: Build
     uses: curiosity-tests/github-workflows/.github/workflows/swift_package_test.yml@0.0.15-racecar
     with:
-      chalk_on: ${{ github.event_name == 'workflow_dispatch' && inputs.leg != 'baseline' }}
+      chalk_on: ${{ inputs.leg == 'instrumented' }}
       profile: ${{ inputs.profile || 'curiosity-tests-racecar' }}
       enable_cross_pr_testing: true
       linux_os_versions: '["amazonlinux2023", "bookworm", "noble", "jammy", "rhel-ubi9"]'
@@ -73,7 +73,7 @@ jobs:
     name: Build and Test Example Package Registry
     uses: curiosity-tests/github-workflows/.github/workflows/swift_package_test.yml@0.0.15-racecar
     with:
-      chalk_on: ${{ github.event_name == 'workflow_dispatch' && inputs.leg != 'baseline' }}
+      chalk_on: ${{ inputs.leg == 'instrumented' }}
       profile: ${{ inputs.profile || 'curiosity-tests-racecar' }}
       enable_cross_pr_testing: false
       enable_linux_checks: true
@@ -94,7 +94,7 @@ jobs:
     name: Soundness
     uses: curiosity-tests/github-workflows/.github/workflows/soundness.yml@0.0.15-racecar
     with:
-      chalk_on: ${{ github.event_name == 'workflow_dispatch' && inputs.leg != 'baseline' }}
+      chalk_on: ${{ inputs.leg == 'instrumented' }}
       profile: ${{ inputs.profile || 'curiosity-tests-racecar' }}
       license_header_check_project_name: "Swift"
       license_header_check_enabled: true
@@ -115,7 +115,7 @@ jobs:
     needs: [soundness]
     uses: curiosity-tests/github-workflows/.github/workflows/swift_package_test.yml@0.0.15-racecar
     with:
-      chalk_on: ${{ github.event_name == 'workflow_dispatch' && inputs.leg != 'baseline' }}
+      chalk_on: ${{ inputs.leg == 'instrumented' }}
       profile: ${{ inputs.profile || 'curiosity-tests-racecar' }}
       enable_linux_checks: false
       enable_windows_checks: false
